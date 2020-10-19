@@ -26,6 +26,8 @@
  */
 
 #include <fstream>
+#include <chrono>
+#include <iostream>
 #include <cadmium/modeling/dynamic_coupled.hpp>
 #include <cadmium/engine/pdevs_dynamic_runner.hpp>
 #include <cadmium/logger/common_loggers.hpp>
@@ -34,7 +36,9 @@
 using namespace std;
 using namespace cadmium;
 using namespace cadmium::celldevs;
-
+using std::cout;
+using std::endl;
+using hclock=std::chrono::high_resolution_clock;
 using TIME = float;
 
 /*************** Loggers *******************/
@@ -60,21 +64,74 @@ using logger_top=logger::multilogger<state, log_messages, global_time_mes, globa
 
 
 int main(int argc, char ** argv) {
+
+	//auto time_init, time_end;
+	int threads;
+
     if (argc < 2) {
         cout << "Program used with wrong parameters. The program must be invoked as follows:";
         cout << argv[0] << " SCENARIO_CONFIG.json [MAX_SIMULATION_TIME (default: 500)]" << endl;
         return -1;
     }
 
+	#ifdef CPU_PARALLEL
+    	if (argc = 3) {
+    		threads = std::atoi(argv[2]);
+
+    	std::cout << "threads:" << threads << endl;
+		}
+    #endif //CADMIUM_EXECUTE_CONCURRENT
+
+    std::cout << "Creating model" << endl;
+
+    auto time_init = hclock::now();
+
     hoya_coupled<TIME> test = hoya_coupled<TIME>("pandemic_hoya");
     std::string scenario_config_file_path = argv[1];
     test.add_lattice_json(scenario_config_file_path);
-    test.couple_cells();
 
+    test.couple_cells();
     std::shared_ptr<cadmium::dynamic::modeling::coupled<TIME>> t = std::make_shared<hoya_coupled<TIME>>(test);
 
-    cadmium::dynamic::engine::runner<TIME, logger_top> r(t, {0});
-    float sim_time = (argc > 2)? atof(argv[2]) : 500;
+    auto time_end = hclock::now();
+
+    std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
+
+    std::cout << "Creating engine" << endl;
+
+    time_init = hclock::now();
+
+	#ifdef CPU_PARALLEL
+    	//if(argc = 3){
+    		cadmium::dynamic::engine::runner<TIME, logger_top> r(t, {0}, threads);
+    	//}else{
+    		//cadmium::dynamic::engine::runner<TIME, logger_top> r(t, {0});
+    	//}
+    #else
+    	cadmium::dynamic::engine::runner<TIME, logger_top> r(t, {0});
+    #endif //CADMIUM_EXECUTE_CONCURRENT
+
+    time_end = hclock::now();
+
+    //float sim_time = (argc > 2)? atof(argv[2]) : 500;
+
+    std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
+
+	#ifdef CPU_PARALLEL
+    	float sim_time = (argc > 3)? atof(argv[3]) : 500;
+    #else
+    	float sim_time = (argc > 2)? atof(argv[2]) : 500;
+    #endif //CADMIUM_EXECUTE_CONCURRENT
+
+    std::cout << "Executing simulation" << endl;
+
+    time_init = hclock::now();
+
     r.run_until(sim_time);
+
+    time_end = hclock::now();
+
+    std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
+
     return 0;
 }
