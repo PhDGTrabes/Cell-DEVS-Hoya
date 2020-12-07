@@ -30,8 +30,16 @@ add_executable(hoya src/main.cpp)
 
 target_link_libraries(hoya PUBLIC ${Boost_LIBRARIES})
 
-add_executable(parallel_hoya src/main.cpp)
+add_executable(cpu_parallel_hoya src/main.cpp)
 
-target_compile_definitions(parallel_hoya PUBLIC CPU_PARALLEL)
+target_compile_definitions(cpu_parallel_hoya PUBLIC CPU_PARALLEL)
+
+add_executable(cpu_lambda_parallel_hoya src/main.cpp)
+
+target_compile_definitions(cpu_lambda_parallel_hoya PUBLIC CPU_LAMBDA_PARALLEL)
+
+add_executable(cpu_delta_parallel_hoya src/main.cpp)
+
+target_compile_definitions(cpu_delta_parallel_hoya PUBLIC CPU_DELTA_PARALLEL)
 
 #target_compile_definitions(parallel_hoya PRIVATE OpenMP::OpenMP_CXX)

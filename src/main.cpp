@@ -74,7 +74,7 @@ int main(int argc, char ** argv) {
         return -1;
     }
 
-	#ifdef CPU_PARALLEL
+	#if defined CPU_PARALLEL || defined CPU_LAMBDA_PARALLEL || defined CPU_DELTA_PARALLEL
     	if (argc = 3) {
     		threads = std::atoi(argv[2]);
 
@@ -101,7 +101,7 @@ int main(int argc, char ** argv) {
 
     time_init = hclock::now();
 
-	#ifdef CPU_PARALLEL
+	#if defined CPU_PARALLEL || defined CPU_LAMBDA_PARALLEL || defined CPU_DELTA_PARALLEL
     	//if(argc = 3){
     		cadmium::dynamic::engine::runner<TIME, logger_top> r(t, {0}, threads);
     	//}else{
@@ -117,7 +117,7 @@ int main(int argc, char ** argv) {
 
     std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
 
-	#ifdef CPU_PARALLEL
+	#if defined CPU_PARALLEL || defined CPU_LAMBDA_PARALLEL || defined CPU_DELTA_PARALLEL
     	float sim_time = (argc > 3)? atof(argv[3]) : 500;
     #else
     	float sim_time = (argc > 2)? atof(argv[2]) : 500;
