@@ -1,3 +1,4 @@
 [submodule "DESTimes"]
 	path = DESTimes
 	url = https://github.com/SimulationEverywhere/DESTimes
+	branch = master
