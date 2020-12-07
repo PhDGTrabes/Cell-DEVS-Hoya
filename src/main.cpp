@@ -32,6 +32,9 @@
 #include <cadmium/engine/pdevs_dynamic_runner.hpp>
 #include <cadmium/logger/common_loggers.hpp>
 #include <model/hoya_coupled.hpp>
+#include "DESTimes/include/NDTime.hpp"
+
+
 
 using namespace std;
 using namespace cadmium;
@@ -39,7 +42,7 @@ using namespace cadmium::celldevs;
 using std::cout;
 using std::endl;
 using hclock=std::chrono::high_resolution_clock;
-using TIME = float;
+using TIME = NDTime;
 
 /*************** Loggers *******************/
 static ofstream out_messages("../logs/pandemic_hoya_outputs.txt");
@@ -78,11 +81,11 @@ int main(int argc, char ** argv) {
     	if (argc = 3) {
     		threads = std::atoi(argv[2]);
 
-    	std::cout << "threads:" << threads << endl;
+    	//std::cout << "threads:" << threads << endl;
 		}
     #endif //CADMIUM_EXECUTE_CONCURRENT
 
-    std::cout << "Creating model" << endl;
+    //std::cout << "Creating model" << endl;
 
     auto time_init = hclock::now();
 
@@ -95,9 +98,9 @@ int main(int argc, char ** argv) {
 
     auto time_end = hclock::now();
 
-    std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
+    //std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
 
-    std::cout << "Creating engine" << endl;
+    //std::cout << "Creating engine" << endl;
 
     time_init = hclock::now();
 
@@ -115,15 +118,20 @@ int main(int argc, char ** argv) {
 
     //float sim_time = (argc > 2)? atof(argv[2]) : 500;
 
-    std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
+    //std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
 
 	#if defined CPU_PARALLEL || defined CPU_LAMBDA_PARALLEL || defined CPU_DELTA_PARALLEL
-    	float sim_time = (argc > 3)? atof(argv[3]) : 500;
+    	int sim_time_seconds = (argc > 3)? atof(argv[3]) : 500;
     #else
-    	float sim_time = (argc > 2)? atof(argv[2]) : 500;
+    	int sim_time_seconds = (argc > 2)? atof(argv[2]) : 500;
     #endif //CADMIUM_EXECUTE_CONCURRENT
 
-    std::cout << "Executing simulation" << endl;
+    // set simulation time in NDTime //
+    NDTime sim_time({0,0,0,0,0,0,0,0});
+
+    sim_time.add_seconds(sim_time_seconds);
+
+    //std::cout << "Executing simulation" << endl;
 
     time_init = hclock::now();
 

@@ -128,7 +128,8 @@ public:
     }
     // It returns the delay to communicate cell's new state.
     T output_delay(sir const &cell_state) const override {
-        return 1;
+	T time({10,0,0,0,0,0,0,1});
+        return time;
     }
 
     float new_infections() const {
