@@ -45,13 +45,13 @@ using hclock=std::chrono::high_resolution_clock;
 using TIME = NDTime;
 
 /*************** Loggers *******************/
-static ofstream out_messages("../logs/pandemic_hoya_outputs.txt");
+static ofstream out_messages("logs/pandemic_hoya_outputs.txt");
 struct oss_sink_messages{
     static ostream& sink(){
         return out_messages;
     }
 };
-static ofstream out_state("../logs/pandemic_hoya_state.txt");
+static ofstream out_state("logs/pandemic_hoya_state.txt");
 struct oss_sink_state{
     static ostream& sink(){
         return out_state;
@@ -79,7 +79,7 @@ int main(int argc, char ** argv) {
 
 	#if defined CPU_PARALLEL || defined CPU_LAMBDA_PARALLEL || defined CPU_DELTA_PARALLEL
     	if (argc = 3) {
-    		threads = std::atoi(argv[2]);
+    		threads = std::atoi(argv[3]);
 
     	//std::cout << "threads:" << threads << endl;
 		}
@@ -120,16 +120,21 @@ int main(int argc, char ** argv) {
 
     //std::cout << std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(time_end - time_init).count() << std::endl;
 
-	#if defined CPU_PARALLEL || defined CPU_LAMBDA_PARALLEL || defined CPU_DELTA_PARALLEL
-    	int sim_time_seconds = (argc > 3)? atof(argv[3]) : 500;
-    #else
-    	int sim_time_seconds = (argc > 2)? atof(argv[2]) : 500;
-    #endif //CADMIUM_EXECUTE_CONCURRENT
+	//#if defined CPU_PARALLEL || defined CPU_LAMBDA_PARALLEL || defined CPU_DELTA_PARALLEL
+    //	int sim_time_seconds = (argc > 3)? atof(argv[3]) : 500;
+    //#else
+    	//int sim_time_seconds = (argc > 2)? atof(argv[2]) : 500;
+    //#endif //CADMIUM_EXECUTE_CONCURRENT
+    int sim_time_seconds = atof(argv[2]);
+
+    //convert seconds to hours, minutes and seconds
+    	int hours = sim_time_seconds/3600;
+    	int remainder = sim_time_seconds-(hours*3600);
+    	int minutes = remainder/60;
+    	int seconds = remainder-(minutes*60);
 
     // set simulation time in NDTime //
-    NDTime sim_time({0,0,0,0,0,0,0,0});
-
-    sim_time.add_seconds(sim_time_seconds);
+    	NDTime sim_time({hours,minutes,seconds,0,0,0,0,0});
 
     //std::cout << "Executing simulation" << endl;
 

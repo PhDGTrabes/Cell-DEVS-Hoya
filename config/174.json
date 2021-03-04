@@ -1,6 +1,6 @@
 {
   "scenario": {
-    "shape": [300, 300],
+    "shape": [174, 174],
     "wrapped": true,
     "default_delay": "inertial",
     "default_cell_type": "hoya",
@@ -37,7 +37,7 @@
   },
   "cells": [
     {
-      "cell_id": [150, 150],
+      "cell_id": [87, 87],
       "state": {
         "population": 100,
         "susceptible": 0.7,

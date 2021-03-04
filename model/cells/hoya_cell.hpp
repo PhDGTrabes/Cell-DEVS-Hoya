@@ -128,7 +128,7 @@ public:
     }
     // It returns the delay to communicate cell's new state.
     T output_delay(sir const &cell_state) const override {
-	T time({10,0,0,0,0,0,0,1});
+	T time({0,0,1,0,0,0,0,0});
         return time;
     }
 
