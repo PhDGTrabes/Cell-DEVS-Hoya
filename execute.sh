@@ -112,8 +112,8 @@ for THREADS in 2 4 8; do
         RESULT=$(echo "${RESULT}+${CURR}" | bc)
     done
 
-        #RESULT=$(echo "scale=4; ${RESULT}/${ITERATIONS}" | bc)
-    #echo "RESULT:${RESULT}"
+    RESULT=$(echo "scale=4; ${RESULT}/${ITERATIONS}" | bc)
+    echo "RESULT:${RESULT}"
     #echo "${THREADS},${RESULT}" >> "$FILENAME_CPU_PARALLEL"
 done
 
